@@ -2,9 +2,13 @@ from uuid import UUID, uuid4
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
 from classes.product import Product, ProductBase
 from docs.Tags import Tags
 from others.products_data import products
+
+class Message(BaseModel):
+    detail: str
 
 
 router = APIRouter(
@@ -31,14 +35,24 @@ async def get_products():
     "/{product_id}/", 
     response_model=Product,
     summary="Get a single product by id",
-    tags=[Tags.products]
+    tags=[Tags.products],
+    responses={
+        200: {
+            "model": Product,
+            "description": "Product requested by ID",
+        },
+        404: {
+            "model": Message,
+            "description": "Product not found",
+        }
+    }
 )
 async def get_product(product_id: UUID):
     """Get one product by `id`"""
     for p in products:
         if p["id"] == product_id:
             return JSONResponse(
-                status=status.HTTP_200_OK,
+                status_code=status.HTTP_200_OK,
                 content=jsonable_encoder(p)
             )
     raise HTTPException(
@@ -51,7 +65,13 @@ async def get_product(product_id: UUID):
     "/", 
     response_model=Product,
     summary="Create a new product",
-    tags=[Tags.products]
+    tags=[Tags.products],
+    responses={
+        201: {
+            "model": Product,
+            "description": "Product successful created."
+        }
+    }
 )
 async def create_product(product: ProductBase):
     """Create a new product and return the product created if success."""
