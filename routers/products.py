@@ -94,7 +94,8 @@ async def delete_product(product_id: UUID):
         if p["id"] == product_id:
             products.remove(p)
             return JSONResponse(
-                status_code=status.HTTP_204_NO_CONTENT
+                status_code=status.HTTP_200_OK,
+                content={"message": "Product deleted"}
             )
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, 
