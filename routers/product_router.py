@@ -43,6 +43,14 @@ def create_product(product: SchemaProduct.ProductCreate, db: Session = Depends(g
     return crud_product.create_product(db=db, product=product)
 
 
+@router.put("/{product_id}/")
+def update_product(product_id: int, product: SchemaProduct.ProductBase, db: Session = Depends(get_db)):
+    return crud_product.update(db=db, product_id=product_id, product=product)
+
+
+@router.delete("/{product_id}/")
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    return crud_product.delete(db=db, product_id=product_id)
 # ==============================================================
 
 
