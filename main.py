@@ -1,18 +1,27 @@
 from fastapi import FastAPI
-from routers import products
+from routers import inventory_router, product_router, transaction_router
+
+from db.database import engine
+from db.models import product, inventory
+
+product.Base.metadata.create_all(bind=engine)
+inventory.Base.metadata.create_all(bind=engine)
 
 description = """
 James Bond API's helps you do awesome stuff. 🚀
 
 ## Products
 
-You will be able to:
-
 * **Read a single product**.
 * **Read a list of products**.
 * **Create product**.
 * **Edit a product**.
 * **Delete a product**.
+
+## Inventory
+
+* **Read inventory data**
+* **Read a product inventory**
 """
 
 app = FastAPI(
@@ -25,4 +34,6 @@ app = FastAPI(
     },
 )
 
-app.include_router(products.router)
+app.include_router(product_router.router)
+app.include_router(inventory_router.router)
+app.include_router(transaction_router.router)
