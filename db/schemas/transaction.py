@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class TransactionBase(BaseModel):
-    quantity: int
-    product_id: int
+    quantity: int = Field(example=1)
+    product_id: int = Field(example=1)
 
 
 class TransactionCreate(TransactionBase):

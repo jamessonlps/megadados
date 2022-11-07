@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..models import inventory as ModelInventory
@@ -24,11 +25,23 @@ def create_inventory(db: Session, product_id: int, amount: int) -> ModelInventor
 
 def update_inventory(db: Session, product_id: int, quantity: int) -> ModelInventory.Inventory:
     db_inventory = get_inventory_by_product(db=db, product_id=product_id)
-    db_inventory.amount += quantity
-    try:
-        db.commit()
-        db.refresh(db_inventory)
-        return db_inventory
-    except:
-        db.rollback()
-        raise Exception
+    # All products are created with inventory. If its inventory does not exists,
+    # the product was not created or it was deleted.
+    if db_inventory is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+
+    new_amount = db_inventory.amount + quantity
+
+    if new_amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Insufficient stock for the transaction."
+        )
+
+    db_inventory.amount = new_amount
+    db.commit()
+    db.refresh(db_inventory)
+    return db_inventory
