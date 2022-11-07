@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
 from docs.Tags import Tags
 
 from sqlalchemy.orm import Session

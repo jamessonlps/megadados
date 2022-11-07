@@ -12,16 +12,21 @@ James Bond API's helps you do awesome stuff. 🚀
 
 ## Products
 
-* **Read a single product**.
-* **Read a list of products**.
-* **Create product**.
-* **Edit a product**.
-* **Delete a product**.
+* Read a single product.
+* Read a list of products.
+* Create product.
+* Edit a product.
+* Delete a product.
 
 ## Inventory
 
-* **Read inventory data**
-* **Read a product inventory**
+* Read inventory data from all products
+* Read a product inventory
+
+## Transactions
+
+* Read transactions data from all products
+* Create a transaction (increase or decrease a product quantity in the inventory)
 """
 
 app = FastAPI(
