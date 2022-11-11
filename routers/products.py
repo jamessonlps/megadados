@@ -76,7 +76,7 @@ async def get_product(product_id: UUID):
 async def create_product(product: ProductBase):
     """Create a new product and return the product created if success."""
     product_dict = product.dict()
-    product_dict["id"] = uuid4()
+    product_dict = { "id": uuid4(), **product_dict}
     products.append(product_dict)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
@@ -112,16 +112,26 @@ async def delete_product(product_id: UUID):
 async def update_product(product_id: UUID, product: ProductBase):
     for p in products:
         if p["id"] == product_id:
+            # Localiza e deleta produto da lista
             idx = products.index(p)
             products.pop(idx)
+            
+            # Cria um objeto produto com os campos antigos
             stored_product_model = Product(**p)
+            
+            # Inicializa objeto de produto com os dados a serem atualizados
             update_data = product.dict(exclude_unset=True)
+            
+            # Faz cópia do objeto antigo atualizando os campos a serem alterados
             updated_product = stored_product_model.copy(update=update_data)
-            p = jsonable_encoder(updated_product)
-            products.append(p)
+            
+            # Grava produto atualizado na lista de produtos e retorna o produto atualizado
+            product_updated = jsonable_encoder(updated_product)
+            product_updated = { "id": product_id, **product_updated }
+            products.append(product_updated)
             return JSONResponse(
                 status_code=status.HTTP_200_OK,
-                content=p
+                content=product_updated
             )
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, 

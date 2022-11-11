@@ -18,7 +18,7 @@ You will be able to:
 app = FastAPI(
     title="James Bond API",
     description=description,
-    version="1.0.0",
+    version="1.0.1",
     contact={
         "name": "Jamesson Leandro Paiva Santos",
         "email": "jamessonlps@al.insper.edu.br",
